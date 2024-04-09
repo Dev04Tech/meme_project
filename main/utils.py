@@ -20,10 +20,10 @@ def userExists(userData):
       for user in users:
             if user['email']==email:
                   #email found
-                  return True#{'response':True,'user':user}
+                  return {'response':True,'user':user}
       
       #email not found
-      return False   #{'response':False,'user':{}}
+      return {'response':False,'user':{}}
 
 def loginUser(userData):
       checkUser=userExists(userData)
@@ -50,7 +50,7 @@ def registerUser(userData):
       '''
       #check whether email id is register or not !
       checkUser=userExists(userData)
-      if(checkUser):
+      if checkUser['response']:
             #user exixts !
             #return response dict.
             return {'statuscode':503,'message':'alreadyregistered','total_users':users}
