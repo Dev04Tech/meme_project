@@ -20,7 +20,7 @@ try:
             port="5432",
             database="memestore",
             user="postgres",
-            password="Radhika"
+            password="RRRRRRR"
             )
       
       print("connected database :")
