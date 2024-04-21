@@ -4,6 +4,13 @@ from .utils import registerUser,loginUser
 from django.contrib.sessions.backends.db import SessionStore #for sessions store
 
 import psycopg2
+import requests
+
+
+# URL :https://api.imgflip.com/get_memes
+# use GET requests for this
+
+
 
 s=SessionStore()
 #connect to database
@@ -166,12 +173,30 @@ def register(request):
 
 def getmemes(request):
       sessionExist=checkSession()
+      r=requests.get('https://api.imgflip.com/get_memes')
+      meme_data=r.json()
       if sessionExist==False:
             return redirect('/login/')
-      else:      
-            return HttpResponse('<h1>wrong address</h1>   <a href="/logout"><button type="submit">Logout</button></a>' )
-      
+      else: 
+            
+            
+            context={
+                  'meme_metadata':r.json()['data']['memes']
+            }
 
+            return render(request,'meme.html',context=context)
+      
+def editmeme(request):
+      sessionStatus=checkSession()
+      if sessionStatus:
+            #display update page 
+            template_id=request.GET['id']
+            context={
+                  'meme_id':template_id
+            }
+            return render(request,'editmeme.html',context=context)
+      else:
+            return redirect('/login/') 
 
 def logout(request):
       try:
@@ -179,3 +204,35 @@ def logout(request):
             return redirect('/login/')
       except:
             return redirect('/memes/')
+      
+
+
+def memedetails(request):
+      sessionStatus=checkSession()
+
+      if sessionStatus:
+            if request.method=='POST':
+                  template_id=request.POST['id']
+                  text0=request.POST['text1']
+                  text1=request.POST['text2']
+
+                  #post request meme api
+                  payload={
+                        'template_id':template_id,
+                        'username':'Ramesh23',
+                        'password':'Suraj@2000',
+                        'text0':text0,
+                        'text1':text1
+                  }
+                  response=requests.request('POST','https://api.imgflip.com/caption_image',params=payload).json()
+
+                  print("response :",response)
+
+                  html_str=f'''
+                              <h1>Response</h1>
+                              <img src="{response['data']['url']}">
+                              <a href="{response['data']['url']}">view Image</a>'''
+                  return HttpResponse(html_str)
+
+      else:
+            return redirect('/login/')
