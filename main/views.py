@@ -219,8 +219,8 @@ def memedetails(request):
                   #post request meme api
                   payload={
                         'template_id':template_id,
-                        'username':'Ramesh23',
-                        'password':'Suraj@2000',
+                        'username':'RRRRRRRR',
+                        'password':'##########',
                         'text0':text0,
                         'text1':text1
                   }
